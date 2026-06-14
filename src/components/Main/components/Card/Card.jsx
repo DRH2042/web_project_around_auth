@@ -1,9 +1,15 @@
 export default function Card(props) {
-  const { name, link, isLiked } = props.card;
+  const { card, onCardClick } = props;
+  const { name, link, isLiked } = card;
 
   return (
     <li className="card">
-      <img className="card__image" src={link} alt={name} />
+      <img
+        className="card__image"
+        src={link}
+        alt={name}
+        onClick={() => onCardClick(card)}
+      />
 
       <button
         aria-label="Eliminar tarjeta"

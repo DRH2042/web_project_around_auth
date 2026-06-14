@@ -5,6 +5,7 @@ import EditProfile from "./components/EditProfile/EditProfile.jsx";
 import EditAvatar from "./components/EditAvatar/EditAvatar.jsx";
 import avatar from "../../images/avatar.jpg";
 import Card from "./components/Card/Card.jsx";
+import ImagePopup from "./components/ImagePopup/ImagePopup.jsx";
 
 const cards = [
   {
@@ -49,6 +50,12 @@ function Main() {
     setPopup(selectedPopup);
   }
 
+  function handleCardClick(card) {
+    setPopup({
+      children: <ImagePopup card={card} />,
+    });
+  }
+
   function handleClosePopup() {
     setPopup(null);
   }
@@ -85,7 +92,7 @@ function Main() {
       <section className="cards page__section">
         <ul className="cards__list">
           {cards.map((card) => (
-            <Card key={card._id} card={card} />
+            <Card key={card._id} card={card} onCardClick={handleCardClick} />
           ))}
         </ul>
       </section>
