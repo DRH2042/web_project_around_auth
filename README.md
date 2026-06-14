@@ -1,16 +1,39 @@
 # React + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Around the U.S. - React
 
-Currently, two official plugins are available:
+Aplicación web interactiva que muestra un perfil y una galería de lugares. Este proyecto representa la migración de **Around the U.S.** a React.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Funcionalidades
 
-## React Compiler
+- Mostrar tarjetas utilizando datos ficticios.
+- Abrir ventanas emergentes para editar el perfil, cambiar el avatar y agregar tarjetas.
+- Ampliar las imágenes de las tarjetas.
+- Cerrar las ventanas emergentes mediante el botón de cierre.
+- Adaptarse a diferentes tamaños de pantalla.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologías utilizadas
 
-## Expanding the ESLint configuration
+- React
+- JavaScript
+- JSX
+- CSS
+- Vite
+- Git y GitHub
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Ejecutar localmente
+
+```bash
+git clone git@github.com:DRH2042/web_project_around_react.git
+cd web_project_around_react
+npm install
+npm run dev
+```
+
+## Repositorio
+
+[Ver el proyecto en GitHub](https://github.com/DRH2042/web_project_around_react)
+
+## Autor
+
+Daniel Ramirez Holguin. TRIPLETEN LATAM
