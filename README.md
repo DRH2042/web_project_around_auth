@@ -1,13 +1,16 @@
-# React + Vite
+# Proyecto Sprint 15: Around the U.S. - React
 
-# Around the U.S. - React
-
-Aplicación web interactiva que muestra un perfil y una galería de lugares. Este proyecto representa la migración de **Around the U.S.** a React.
+Aplicación web interactiva que muestra un perfil y una galería de lugares. Este proyecto continúa la migración de **Around the U.S.** a React y conecta la interfaz con la API para cargar y actualizar datos reales.
 
 ## Funcionalidades
 
-- Mostrar tarjetas utilizando datos ficticios.
-- Abrir ventanas emergentes para editar el perfil, cambiar el avatar y agregar tarjetas.
+- Cargar la información del usuario desde la API.
+- Mostrar tarjetas obtenidas desde la API.
+- Agregar nuevas tarjetas.
+- Dar y quitar "me gusta" en las tarjetas.
+- Eliminar tarjetas propias.
+- Editar el perfil del usuario.
+- Cambiar el avatar del usuario.
 - Ampliar las imágenes de las tarjetas.
 - Cerrar las ventanas emergentes mediante el botón de cierre.
 - Adaptarse a diferentes tamaños de pantalla.

@@ -1,39 +1,28 @@
-import { useState } from "react";
+import { useContext } from "react";
 import Popup from "./components/Popup/Popup.jsx";
 import NewCard from "./components/NewCard/NewCard.jsx";
 import EditProfile from "./components/EditProfile/EditProfile.jsx";
 import EditAvatar from "./components/EditAvatar/EditAvatar.jsx";
-import avatar from "../../images/avatar.jpg";
 import Card from "./components/Card/Card.jsx";
 import ImagePopup from "./components/ImagePopup/ImagePopup.jsx";
+import CurrentUserContext from "../../contexts/CurrentUserContext.js";
+import avatar from "../../images/avatar.jpg";
 
-const cards = [
-  {
-    isLiked: false,
-    _id: "5d1f0611d321eb4bdcd707dd",
-    name: "Yosemite Valley",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg",
-    owner: "5d1f0611d321eb4bdcd707dd",
-    createdAt: "2019-07-05T08:10:57.741Z",
-  },
-  {
-    isLiked: false,
-    _id: "5d1f064ed321eb4bdcd707de",
-    name: "Lake Louise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg",
-    owner: "5d1f0611d321eb4bdcd707dd",
-    createdAt: "2019-07-05T08:11:58.324Z",
-  },
-];
-
-console.log(cards);
-
-function Main() {
-  const [popup, setPopup] = useState(null);
+function Main(props) {
+  const {
+    cards,
+    onAddPlaceSubmit,
+    onCardDelete,
+    onCardLike,
+    onClosePopup,
+    onOpenPopup,
+    popup,
+  } = props;
+  const { currentUser } = useContext(CurrentUserContext);
 
   const newCardPopup = {
     title: "Nuevo lugar",
-    children: <NewCard />,
+    children: <NewCard onAddPlaceSubmit={onAddPlaceSubmit} />,
   };
 
   const editProfilePopup = {
@@ -46,18 +35,10 @@ function Main() {
     children: <EditAvatar />,
   };
 
-  function handleOpenPopup(selectedPopup) {
-    setPopup(selectedPopup);
-  }
-
   function handleCardClick(card) {
-    setPopup({
+    onOpenPopup({
       children: <ImagePopup card={card} />,
     });
-  }
-
-  function handleClosePopup() {
-    setPopup(null);
   }
 
   return (
@@ -65,40 +46,46 @@ function Main() {
       <section className="profile page__section">
         <img
           className="profile__image"
-          src={avatar}
-          alt="Avatar"
-          onClick={() => handleOpenPopup(editAvatarPopup)}
+          src={currentUser.avatar || avatar}
+          alt={currentUser.name || "Avatar"}
+          onClick={() => onOpenPopup(editAvatarPopup)}
         />
 
         <div className="profile__info">
-          <h1 className="profile__title">Jacques Cousteau</h1>
+          <h1 className="profile__title">{currentUser.name}</h1>
           <button
             aria-label="Editar perfil"
             className="profile__edit-button"
             type="button"
-            onClick={() => handleOpenPopup(editProfilePopup)}
+            onClick={() => onOpenPopup(editProfilePopup)}
           />
-          <p className="profile__description">Explorador</p>
+          <p className="profile__description">{currentUser.about}</p>
         </div>
 
         <button
           aria-label="Agregar tarjeta"
           className="profile__add-button"
           type="button"
-          onClick={() => handleOpenPopup(newCardPopup)}
+          onClick={() => onOpenPopup(newCardPopup)}
         />
       </section>
 
       <section className="cards page__section">
         <ul className="cards__list">
           {cards.map((card) => (
-            <Card key={card._id} card={card} onCardClick={handleCardClick} />
+            <Card
+              key={card._id}
+              card={card}
+              onCardClick={handleCardClick}
+              onCardDelete={onCardDelete}
+              onCardLike={onCardLike}
+            />
           ))}
         </ul>
       </section>
 
       {popup && (
-        <Popup onClose={handleClosePopup} title={popup.title}>
+        <Popup onClose={onClosePopup} title={popup.title}>
           {popup.children}
         </Popup>
       )}
