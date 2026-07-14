@@ -1,23 +1,25 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import CurrentUserContext from "../../../../contexts/CurrentUserContext.js";
+import useFormValidation from "../../../../hooks/useFormValidation.js";
 
 export default function EditProfile() {
   const { currentUser, handleUpdateUser } = useContext(CurrentUserContext);
-  const [name, setName] = useState(currentUser.name || "");
-  const [description, setDescription] = useState(currentUser.about || "");
-
-  function handleNameChange(event) {
-    setName(event.target.value);
-  }
-
-  function handleDescriptionChange(event) {
-    setDescription(event.target.value);
-  }
+  const { values, errors, isValid, handleChange } = useFormValidation(
+    {
+      name: currentUser.name || "",
+      description: currentUser.about || "",
+    },
+    Boolean(currentUser.name && currentUser.about)
+  );
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    handleUpdateUser({ name, about: description });
+    if (!isValid) {
+      return;
+    }
+
+    handleUpdateUser({ name: values.name, about: values.description });
   }
 
   return (
@@ -30,36 +32,52 @@ export default function EditProfile() {
       <label className="popup__field">
         <input
           id="profile-name"
-          className="popup__input popup__input_type_name"
+          className={`popup__input popup__input_type_name ${
+            errors.name ? "popup__input_type_error" : ""
+          }`}
           name="name"
           placeholder="Nombre"
           type="text"
           required
           minLength="2"
           maxLength="40"
-          value={name}
-          onChange={handleNameChange}
+          value={values.name || ""}
+          onBlur={handleChange}
+          onChange={handleChange}
         />
-        <span className="popup__error" id="profile-name-error"></span>
+        <span className="popup__error" id="profile-name-error">
+          {errors.name}
+        </span>
       </label>
 
       <label className="popup__field">
         <input
           id="profile-description"
-          className="popup__input popup__input_type_description"
+          className={`popup__input popup__input_type_description ${
+            errors.description ? "popup__input_type_error" : ""
+          }`}
           name="description"
           placeholder="Acerca de mí"
           type="text"
           required
           minLength="2"
           maxLength="200"
-          value={description}
-          onChange={handleDescriptionChange}
+          value={values.description || ""}
+          onBlur={handleChange}
+          onChange={handleChange}
         />
-        <span className="popup__error" id="profile-description-error"></span>
+        <span className="popup__error" id="profile-description-error">
+          {errors.description}
+        </span>
       </label>
 
-      <button className="button popup__button" type="submit">
+      <button
+        className={`button popup__button ${
+          !isValid ? "popup__button_disabled" : ""
+        }`}
+        disabled={!isValid}
+        type="submit"
+      >
         Guardar
       </button>
     </form>

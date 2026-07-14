@@ -1,21 +1,19 @@
-import { useState } from "react";
+import useFormValidation from "../../../../hooks/useFormValidation.js";
 
 export default function NewCard({ onAddPlaceSubmit }) {
-  const [link, setLink] = useState("");
-  const [name, setName] = useState("");
-
-  function handleNameChange(event) {
-    setName(event.target.value);
-  }
-
-  function handleLinkChange(event) {
-    setLink(event.target.value);
-  }
+  const { values, errors, isValid, handleChange } = useFormValidation({
+    name: "",
+    link: "",
+  });
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    onAddPlaceSubmit({ name, link });
+    if (!isValid) {
+      return;
+    }
+
+    onAddPlaceSubmit({ name: values.name, link: values.link });
   }
 
   return (
@@ -28,35 +26,51 @@ export default function NewCard({ onAddPlaceSubmit }) {
     >
       <label className="popup__field">
         <input
-          className="popup__input popup__input_type_card-name"
+          className={`popup__input popup__input_type_card-name ${
+            errors.name ? "popup__input_type_error" : ""
+          }`}
           id="card-name"
           maxLength="30"
           minLength="1"
-          name="card-name"
+          name="name"
           placeholder="Título"
           required
           type="text"
-          value={name}
-          onChange={handleNameChange}
+          value={values.name || ""}
+          onBlur={handleChange}
+          onChange={handleChange}
         />
-        <span className="popup__error" id="card-name-error"></span>
+        <span className="popup__error" id="card-name-error">
+          {errors.name}
+        </span>
       </label>
 
       <label className="popup__field">
         <input
-          className="popup__input popup__input_type_url"
+          className={`popup__input popup__input_type_url ${
+            errors.link ? "popup__input_type_error" : ""
+          }`}
           id="card-link"
           name="link"
           placeholder="Enlace a la imagen"
           required
           type="url"
-          value={link}
-          onChange={handleLinkChange}
+          value={values.link || ""}
+          onBlur={handleChange}
+          onChange={handleChange}
         />
-        <span className="popup__error" id="card-link-error"></span>
+        <span className="popup__error" id="card-link-error">
+          {errors.link}
+        </span>
       </label>
 
-      <button className="button popup__button" type="submit">
+      <button
+        className={`button popup__button ${
+          !isValid ? "popup__button_disabled" : ""
+        }`}
+        disabled={!isValid}
+        type="submit"
+      >
         Guardar
       </button>
     </form>
