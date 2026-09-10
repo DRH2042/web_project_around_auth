@@ -1,30 +1,110 @@
 import { useEffect, useState } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import Header from "./Header/Header.jsx";
 import Footer from "./Footer/Footer.jsx";
 import Main from "./Main/Main.jsx";
+import Login from "./Login/Login.jsx";
+import Register from "./Register/Register.jsx";
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute.jsx";
+import InfoTooltip from "./InfoTooltip/InfoTooltip.jsx";
 import CurrentUserContext from "../contexts/CurrentUserContext.js";
 import api from "../utils/api.js";
+import * as auth from "../utils/auth.js";
+
+const TOKEN_KEY = "jwt";
 
 function App() {
   const [cards, setCards] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const [authEmail, setAuthEmail] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [isCheckingToken, setIsCheckingToken] = useState(() =>
+    Boolean(localStorage.getItem(TOKEN_KEY))
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [tooltip, setTooltip] = useState({ isOpen: false, isSuccess: false });
   const [popup, setPopup] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    api
-      .getUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-      })
-      .catch((error) => console.error(error));
+    const token = localStorage.getItem(TOKEN_KEY);
 
-    api
-      .getCardList()
-      .then((cardsData) => {
+    if (!token) {
+      return;
+    }
+
+    auth
+      .getUserInfo(token)
+      .then(({ data }) => {
+        setAuthEmail(data.email);
+        setLoggedIn(true);
+      })
+      .catch(() => {
+        localStorage.removeItem(TOKEN_KEY);
+      })
+      .finally(() => setIsCheckingToken(false));
+  }, []);
+
+  useEffect(() => {
+    if (!loggedIn) {
+      return;
+    }
+
+    Promise.all([api.getUserInfo(), api.getCardList()])
+      .then(([userData, cardsData]) => {
+        setCurrentUser(userData);
         setCards(cardsData);
       })
       .catch((error) => console.error(error));
-  }, []);
+  }, [loggedIn]);
+
+  function handleRegister({ email, password }) {
+    setIsSubmitting(true);
+    auth
+      .register(email, password)
+      .then(() => setTooltip({ isOpen: true, isSuccess: true }))
+      .catch((error) => {
+        console.error(error);
+        setTooltip({ isOpen: true, isSuccess: false });
+      })
+      .finally(() => setIsSubmitting(false));
+  }
+
+  function handleLogin({ email, password }) {
+    setIsSubmitting(true);
+    auth
+      .authorize(email, password)
+      .then(({ token }) => {
+        localStorage.setItem(TOKEN_KEY, token);
+        setAuthEmail(email);
+        setLoggedIn(true);
+        navigate("/", { replace: true });
+      })
+      .catch((error) => {
+        console.error(error);
+        setTooltip({ isOpen: true, isSuccess: false });
+      })
+      .finally(() => setIsSubmitting(false));
+  }
+
+  function handleLogout() {
+    localStorage.removeItem(TOKEN_KEY);
+    setLoggedIn(false);
+    setAuthEmail("");
+    setCards([]);
+    setCurrentUser({});
+    setPopup(null);
+    navigate("/signin", { replace: true });
+  }
+
+  function handleCloseTooltip() {
+    const shouldGoToLogin = tooltip.isSuccess;
+    setTooltip({ isOpen: false, isSuccess: false });
+
+    if (shouldGoToLogin) {
+      navigate("/signin");
+    }
+  }
 
   function handleOpenPopup(selectedPopup) {
     setPopup(selectedPopup);
@@ -101,17 +181,61 @@ function App() {
       value={{ currentUser, handleUpdateAvatar, handleUpdateUser }}
     >
       <div className="page__content">
-        <Header />
-        <Main
-          cards={cards}
-          onAddPlaceSubmit={handleAddPlaceSubmit}
-          onCardDelete={handleCardDelete}
-          onCardLike={handleCardLike}
-          onClosePopup={handleClosePopup}
-          onOpenPopup={handleOpenPopup}
-          popup={popup}
+        <Header
+          email={authEmail}
+          loggedIn={loggedIn}
+          onLogout={handleLogout}
         />
-        <Footer />
+        <Routes>
+          <Route
+            path="/signup"
+            element={
+              <Register
+                isLoading={isSubmitting}
+                loggedIn={loggedIn}
+                onRegister={handleRegister}
+              />
+            }
+          />
+          <Route
+            path="/signin"
+            element={
+              <Login
+                isLoading={isSubmitting}
+                loggedIn={loggedIn}
+                onLogin={handleLogin}
+              />
+            }
+          />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute
+                isCheckingToken={isCheckingToken}
+                loggedIn={loggedIn}
+              >
+                <>
+                  <Main
+                    cards={cards}
+                    onAddPlaceSubmit={handleAddPlaceSubmit}
+                    onCardDelete={handleCardDelete}
+                    onCardLike={handleCardLike}
+                    onClosePopup={handleClosePopup}
+                    onOpenPopup={handleOpenPopup}
+                    popup={popup}
+                  />
+                  <Footer />
+                </>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+        <InfoTooltip
+          isOpen={tooltip.isOpen}
+          isSuccess={tooltip.isSuccess}
+          onClose={handleCloseTooltip}
+        />
       </div>
     </CurrentUserContext.Provider>
   );

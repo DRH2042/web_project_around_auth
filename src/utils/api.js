@@ -19,7 +19,7 @@ class Api {
         ...this._headers,
         ...options.headers,
       },
-    }).then(this._checkResponse);
+    }).then((response) => this._checkResponse(response));
   }
 
   getUserInfo() {

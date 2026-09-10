@@ -12,6 +12,37 @@
   object-fit: contain;
 }
 
+.header__auth {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-left: auto;
+  color: #fff;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.header__link,
+.header__logout {
+  color: #fff;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.header__logout {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #a9a9a9;
+  font: inherit;
+  cursor: pointer;
+}
+
+.header__link:hover,
+.header__logout:hover {
+  opacity: 0.6;
+}
+
 @media screen and (max-width: 544px) {
   .header {
     min-height: 85px;
@@ -21,5 +52,18 @@
     width: 126px;
     height: 24px;
     margin: 0 0 0 7px;
+  }
+
+  .header__auth {
+    gap: 10px;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
+  .header__email {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }

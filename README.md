@@ -1,9 +1,13 @@
-# Proyecto Sprint 15: Around the U.S. - React
+# Proyecto Sprint 18: Around the U.S. - Autorización
 
-Aplicación web interactiva que muestra un perfil y una galería de lugares. Este proyecto continúa la migración de **Around the U.S.** a React y conecta la interfaz con la API para cargar y actualizar datos reales.
+Aplicación web de React con registro, inicio de sesión y rutas protegidas. Los usuarios autorizados pueden gestionar su perfil y una galería de lugares; quienes no tienen una sesión válida son redirigidos al acceso.
 
 ## Funcionalidades
 
+- Registrar nuevos usuarios e informar el resultado mediante un modal.
+- Iniciar sesión y almacenar el JWT en `localStorage`.
+- Validar el JWT al volver a abrir la aplicación.
+- Proteger la ruta principal y cerrar sesión de forma segura.
 - Cargar la información del usuario desde la API.
 - Mostrar tarjetas obtenidas desde la API.
 - Agregar nuevas tarjetas.
@@ -21,22 +25,24 @@ Aplicación web interactiva que muestra un perfil y una galería de lugares. Est
 - JavaScript
 - JSX
 - CSS
+- React Router
+- API REST y JWT
 - Vite
 - Git y GitHub
 
 ## Ejecutar localmente
 
 ```bash
-git clone git@github.com:DRH2042/web_project_around_react.git
-cd web_project_around_react
+git clone git@github.com:DRH2042/web_project_around_auth.git
+cd web_project_around_auth
 npm install
 npm run dev
 ```
 
 ## Repositorio
 
-[Ver el proyecto en GitHub](https://github.com/DRH2042/web_project_around_react)
+[Ver el proyecto en GitHub](https://github.com/DRH2042/web_project_around_auth)
 
 ## Autor
 
-Daniel Ramirez Holguin. TRIPLETEN LATAM
+Daniel Ramirez Holguin — TripleTen LATAM
