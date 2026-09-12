@@ -31,7 +31,7 @@ export default function NewCard({ onAddPlaceSubmit }) {
           }`}
           id="card-name"
           maxLength="30"
-          minLength="1"
+          minLength="2"
           name="name"
           placeholder="Título"
           required

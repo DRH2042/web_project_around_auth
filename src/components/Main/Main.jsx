@@ -5,6 +5,7 @@ import EditProfile from "./components/EditProfile/EditProfile.jsx";
 import EditAvatar from "./components/EditAvatar/EditAvatar.jsx";
 import Card from "./components/Card/Card.jsx";
 import ImagePopup from "./components/ImagePopup/ImagePopup.jsx";
+import RemoveConfirmation from "./components/RemoveConfirmation/RemoveConfirmation.jsx";
 import CurrentUserContext from "../../contexts/CurrentUserContext.js";
 import avatar from "../../images/avatar.jpg";
 
@@ -38,6 +39,18 @@ function Main(props) {
   function handleCardClick(card) {
     onOpenPopup({
       children: <ImagePopup card={card} />,
+    });
+  }
+
+  function handleCardDeleteClick(card) {
+    onOpenPopup({
+      title: "¿Estás seguro/a?",
+      children: (
+        <RemoveConfirmation
+          onCancel={onClosePopup}
+          onConfirm={() => onCardDelete(card)}
+        />
+      ),
     });
   }
 
@@ -77,7 +90,7 @@ function Main(props) {
               key={card._id}
               card={card}
               onCardClick={handleCardClick}
-              onCardDelete={onCardDelete}
+              onCardDelete={handleCardDeleteClick}
               onCardLike={onCardLike}
             />
           ))}
